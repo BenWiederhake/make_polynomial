@@ -11,6 +11,11 @@ LN2 = sympy.log(2)
 S2 = sympy.sqrt(2)
 X = sympy.Symbol("x")
 
+# S2 (apx 1.414) is too early
+# 1.45 is too early
+INTERMEDIATE = sympy.Rational(147, 100)  # Good enough
+# 1.5 is too late
+
 REQUIREMENTS = [
     # (place, value, value-of-derivative-or-None),
     # Example: (42, 2, 1337) specifies that we desire f(42)=2 and f'(42)=1337
@@ -18,7 +23,9 @@ REQUIREMENTS = [
     # The resulting function will be of degree d where d is the degree of requirements,
     # i.e. len(REQUIREMENTS)+sum(d is not None for _,_,d in REQUIREMENTS).
     (1, 0, 1 / LN2),
-    (S2, sympy.Rational(1, 2), None),
+    #(S2, sympy.Rational(1, 2), None),
+    (INTERMEDIATE, sympy.log(INTERMEDIATE)/LN2, None),
+    #(sympy.Rational(3, 2), sympy.log(sympy.Rational(3, 2))/LN2, None),
     (2, 1, 1 / (2 * LN2)),
 ]
 
@@ -74,6 +81,9 @@ def compute_polynomial(requirements):
 def run():
     formula = compute_polynomial(REQUIREMENTS)
     print(formula)
+    print(formula.evalf())
+    collected = sympy.collect(sympy.expand(formula), X)
+    print(collected.evalf())
 
 
 if __name__ == "__main__":
